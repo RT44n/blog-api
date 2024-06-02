@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 
 const post_controller = require("../controllers/postController");
-const comment_controller = require("../controllers/commentController"); // corrected line
+const comment_controller = require("../controllers/commentController");
 const user_controller = require("../controllers/userController");
 
 router.get("/posts", post_controller.getPosts);
@@ -11,9 +11,9 @@ router.get("/posts/:id", post_controller.getPostDetail);
 
 router.post("/posts", post_controller.postPosts);
 
-router.put("/posts", post_controller.putPosts);
+router.put("/posts/:id", post_controller.putPosts);
 
-router.delete("/posts", post_controller.deletePosts);
+router.delete("/posts/:id", post_controller.deletePosts);
 
 router.get("/comments", comment_controller.getComments);
 
