@@ -21,6 +21,35 @@ exports.getPosts = asyncHandler(async (req, res, next) => {
   res.json(allPosts);
 });
 
+//GET A SINGLE POST
+exports.getPostDetail = asyncHandler(async (req, res, next) => {
+  try {
+    const postId = req.params.id;
+    console.log(postId);
+
+    const post = await Post.findById(postId)
+      .populate("author", "username")
+      .populate({
+        path: "comments",
+        populate: {
+          path: "author",
+          select: "username",
+        },
+      })
+      .exec();
+
+    if (!post) {
+      const error = new Error("No post found");
+      error.status = 404;
+      return next(error);
+    }
+
+    res.json(post);
+  } catch (error) {
+    next(error);
+  }
+});
+
 //POST A NEW BLOG POST
 exports.postPosts = asyncHandler(async (req, res, next) => {
   try {

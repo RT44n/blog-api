@@ -7,6 +7,8 @@ const user_controller = require("../controllers/userController");
 
 router.get("/posts", post_controller.getPosts);
 
+router.get("/posts/:id", post_controller.getPostDetail);
+
 router.post("/posts", post_controller.postPosts);
 
 router.put("/posts", post_controller.putPosts);
