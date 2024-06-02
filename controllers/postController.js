@@ -96,5 +96,13 @@ exports.putPosts = asyncHandler(async (req, res, next) => {
 
 //DELETE A SINGLE BLOG POST
 exports.deletePosts = asyncHandler(async (req, res, next) => {
-  res.json({ message: "yet to be implemented" });
+  const post = await Post.findById(req.params.id).exec();
+
+  if (!post) {
+    return res.status(404).json({ message: "Post not found" });
+  }
+
+  await Post.findByIdAndDelete(req.params.id);
+
+  res.json({ message: "Successfully deleted" });
 });
