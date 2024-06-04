@@ -20,7 +20,7 @@ const mongoDB = prod_db_url || dev_db_url;
 
 main().catch((err) => console.log(err));
 async function main() {
-  await mongoose.connect(mongoDB)
+  await mongoose.connect(mongoDB);
 }
 
 // Middleware setup
