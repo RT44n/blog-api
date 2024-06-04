@@ -7,16 +7,7 @@ const Comment = require("../models/comment");
 //GET ALL BLOG POSTS
 exports.getPosts = asyncHandler(async (req, res, next) => {
   // Find all posts and populate 'author' and 'comments'
-  const allPosts = await Post.find({})
-    .populate("author", "username")
-    .populate({
-      path: "comments",
-      populate: {
-        path: "author",
-        select: "username",
-      },
-    })
-    .exec();
+  const allPosts = await Post.find({}).populate("author", "username").exec();
 
   res.json(allPosts);
 });
@@ -29,13 +20,6 @@ exports.getPostDetail = asyncHandler(async (req, res, next) => {
 
     const post = await Post.findById(postId)
       .populate("author", "username")
-      .populate({
-        path: "comments",
-        populate: {
-          path: "author",
-          select: "username",
-        },
-      })
       .exec();
 
     if (!post) {
