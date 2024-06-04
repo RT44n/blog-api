@@ -28,6 +28,8 @@ router.get("/users", user_controller.getUsers);
 
 router.post("/auth/signup", auth_controller.signup);
 
+router.post("/auth/signin", auth_controller.signin);
+
 //router.put("/users/:id", user_controller.putUsers);
 
 //router.delete("/users/:id", user_controller.deleteUsers);
