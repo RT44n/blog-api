@@ -55,7 +55,7 @@ exports.postPosts = asyncHandler(async (req, res, next) => {
   try {
     const post = new Post({
       title: req.body.title,
-      author: req.user,
+      author: req.user.id,
       date: new Date(),
       text: req.body.text,
       status: "Public",
@@ -74,7 +74,7 @@ exports.putPosts = asyncHandler(async (req, res, next) => {
     const postId = req.params.id;
     const updatedPost = {
       title: req.body.title,
-      author: req.user,
+      author: req.user.id,
       date: new Date(),
       text: req.body.text,
       status: req.body.status,
@@ -96,8 +96,12 @@ exports.putPosts = asyncHandler(async (req, res, next) => {
 
 //DELETE A SINGLE BLOG POST
 exports.deletePosts = asyncHandler(async (req, res, next) => {
+  const user = req.user.id;
   const post = await Post.findById(req.params.id).exec();
 
+  if (post.user._id !== user) {
+    return res.status(401).json({ message: "Unauthorized" });
+  }
   if (!post) {
     return res.status(404).json({ message: "Post not found" });
   }

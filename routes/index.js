@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const authenticateJWT = require("./middleware/authenticateJWT");
+const passport = require("passport");
 
 const post_controller = require("../controllers/postController");
 const comment_controller = require("../controllers/commentController");
@@ -11,21 +11,41 @@ router.get("/posts", post_controller.getPosts);
 
 router.get("/posts/:id", post_controller.getPostDetail);
 
-router.post("/posts", authenticateJWT, post_controller.postPosts);
+router.post(
+  "/posts",
+  passport.authenticate("jwt", { session: false }),
+  post_controller.postPosts
+);
 
-router.put("/posts/:id", authenticateJWT, post_controller.putPosts);
+router.put(
+  "/posts/:id",
+  passport.authenticate("jwt", { session: false }),
+  post_controller.putPosts
+);
 
-router.delete("/posts/:id", authenticateJWT, post_controller.deletePosts);
+router.delete(
+  "/posts/:id",
+  passport.authenticate("jwt", { session: false }),
+  post_controller.deletePosts
+);
 
 router.get("/comments", comment_controller.getComments);
 
-router.post("/comments", authenticateJWT, comment_controller.postComments);
+router.post(
+  "/comments",
+  passport.authenticate("jwt", { session: false }),
+  comment_controller.postComments
+);
 
-router.put("/comments/:id", authenticateJWT, comment_controller.putComments);
+router.put(
+  "/comments/:id",
+  passport.authenticate("jwt", { session: false }),
+  comment_controller.putComments
+);
 
 router.delete(
   "/comments/:id",
-  authenticateJWT,
+  passport.authenticate("jwt", { session: false }),
   comment_controller.deleteComments
 );
 
@@ -35,8 +55,7 @@ router.post("/auth/signup", auth_controller.signup);
 
 router.post("/auth/signin", auth_controller.signin);
 
-//router.put("/users/:id", user_controller.putUsers);
-
-//router.delete("/users/:id", user_controller.deleteUsers);
+// router.put("/users/:id", passport.authenticate("jwt", { session: false }), user_controller.putUsers);
+// router.delete("/users/:id", passport.authenticate("jwt", { session: false }), user_controller.deleteUsers);
 
 module.exports = router;

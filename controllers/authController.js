@@ -1,9 +1,12 @@
-const asyncHandler = require("express-async-handler");
-const User = require("../models/user");
+const passport = require("passport");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const User = require("../models/user");
 
-exports.signup = asyncHandler(async (req, res, next) => {
+// Import the configured passport strategies
+require("../config/passport");
+
+exports.signup = async (req, res, next) => {
   try {
     const { username, firstname, password } = req.body;
 
@@ -21,34 +24,28 @@ exports.signup = asyncHandler(async (req, res, next) => {
   } catch (err) {
     next(err);
   }
-});
+};
 
-exports.signin = asyncHandler(async (req, res, next) => {
-  try {
-    const { username, password } = req.body;
-
-    // Find the user by username
-    const user = await User.findOne({ username });
-    if (!user) {
-      return res.status(401).json({ message: "Invalid username or password" });
+exports.signin = (req, res, next) => {
+  passport.authenticate("local", { session: false }, (err, user) => {
+    if (err || !user) {
+      return res.status(401).json({ message: "Login failed" });
     }
 
-    // Check if the password is correct
-    const isPasswordValid = await bcrypt.compare(password, user.password);
-    if (!isPasswordValid) {
-      return res.status(401).json({ message: "Invalid username or password" });
-    }
+    req.login(user, { session: false }, (err) => {
+      if (err) {
+        res.send(err);
+      }
 
-    // Generate a JWT token
-    const token = jwt.sign(
-      { id: user._id, username: user.username },
-      process.env.JWT_SECRET,
-      { expiresIn: "1h" }
-    );
+      // Generate a JWT token
+      const token = jwt.sign(
+        { id: user._id, username: user.username },
+        process.env.JWT_SECRET,
+        { expiresIn: "1h" }
+      );
 
-    // Send the token to the client
-    res.json({ message: "Signin successful!", token });
-  } catch (err) {
-    next(err);
-  }
-});
+      // Send the token to the client
+      return res.json({ message: "Signin successful!", token });
+    });
+  })(req, res);
+};

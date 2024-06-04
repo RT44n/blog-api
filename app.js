@@ -7,6 +7,7 @@ const cors = require("cors");
 const helmet = require("helmet");
 const rateLimit = require("express-rate-limit");
 const indexRouter = require("./routes/index");
+const passport = require("passport");
 require("dotenv").config();
 
 const app = express();
@@ -27,6 +28,7 @@ async function main() {
 app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+app.use(passport.initialize());
 app.use(compression());
 app.use(cors());
 app.use(helmet());
