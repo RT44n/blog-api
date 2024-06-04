@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const authenticateJWT = require("./middleware/authenticateJWT");
 
 const post_controller = require("../controllers/postController");
 const comment_controller = require("../controllers/commentController");
@@ -10,19 +11,23 @@ router.get("/posts", post_controller.getPosts);
 
 router.get("/posts/:id", post_controller.getPostDetail);
 
-router.post("/posts", post_controller.postPosts);
+router.post("/posts", authenticateJWT, post_controller.postPosts);
 
-router.put("/posts/:id", post_controller.putPosts);
+router.put("/posts/:id", authenticateJWT, post_controller.putPosts);
 
-router.delete("/posts/:id", post_controller.deletePosts);
+router.delete("/posts/:id", authenticateJWT, post_controller.deletePosts);
 
 router.get("/comments", comment_controller.getComments);
 
-router.post("/comments", comment_controller.postComments);
+router.post("/comments", authenticateJWT, comment_controller.postComments);
 
-router.put("/comments/:id", comment_controller.putComments);
+router.put("/comments/:id", authenticateJWT, comment_controller.putComments);
 
-router.delete("/comments/:id", comment_controller.deleteComments);
+router.delete(
+  "/comments/:id",
+  authenticateJWT,
+  comment_controller.deleteComments
+);
 
 router.get("/users", user_controller.getUsers);
 
