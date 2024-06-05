@@ -28,7 +28,10 @@ exports.getPostDetail = asyncHandler(async (req, res, next) => {
       return next(error);
     }
 
-    res.json(post);
+    const comments = await Comment.find({ post: postId })
+      .populate("author", "username")
+      .exec();
+    res.json(post, comments);
   } catch (error) {
     next(error);
   }

@@ -7,7 +7,6 @@ const PostSchema = new Schema({
   author: { type: Schema.Types.ObjectId, ref: "User", required: true },
   date: { type: Date, default: Date.now, required: true },
   text: { type: String, required: true },
-  thumbnail: { type: String, required: true },
   status: { type: String, required: true, enum: ["Public", "Private"] },
   tags: {
     type: [String],
