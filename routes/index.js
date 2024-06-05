@@ -29,7 +29,7 @@ router.delete(
   post_controller.deletePosts
 );
 
-router.get("/comments", comment_controller.getComments);
+router.get("user/:id/comments", comment_controller.getUserComments);
 
 router.post(
   "/comments",
