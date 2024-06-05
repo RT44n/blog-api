@@ -10,7 +10,7 @@ exports.getUserComments = asyncHandler(async (req, res, next) => {
       .populate("author", "username")
       .exec();
 
-    if (!comments) {
+    if (!comments.length) {
       const error = new Error("No comments found");
       error.status = 404;
       return next(error);

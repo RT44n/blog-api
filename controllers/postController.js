@@ -37,6 +37,26 @@ exports.getPostDetail = asyncHandler(async (req, res, next) => {
   }
 });
 
+//FIND POSTS OF A SPECIFIC USER
+exports.getUserPosts = asyncHandler(async (req, res, next) => {
+  try {
+    const user = req.params.id;
+
+    const posts = await Post.find({ author: user })
+      .populate("author", "username")
+      .exec();
+
+    if (!posts.length) {
+      const error = new Error("No posts found");
+      error.status = 404;
+      return next(error);
+    }
+    res.json(posts);
+  } catch (error) {
+    next(error);
+  }
+});
+
 //POST A NEW BLOG POST
 exports.postPosts = asyncHandler(async (req, res, next) => {
   try {
