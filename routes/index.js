@@ -9,7 +9,11 @@ const auth_controller = require("../controllers/authController");
 
 router.get("/posts", post_controller.getPosts);
 
-router.get("/user/:id/posts", post_controller.getUserPosts);
+router.get(
+  "/user/posts",
+  passport.authenticate("jwt", { session: false }),
+  post_controller.getUserPosts
+);
 
 router.get("/posts/:id", post_controller.getPostDetail);
 

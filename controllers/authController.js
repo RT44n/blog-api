@@ -45,7 +45,11 @@ exports.signin = (req, res, next) => {
       );
 
       // Send the token to the client
-      return res.json({ message: "Signin successful!", token });
+      return res.json({
+        message: "Signin successful!",
+        token,
+        user: user.username,
+      });
     });
   })(req, res);
 };

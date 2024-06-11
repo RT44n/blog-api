@@ -3,6 +3,7 @@ const { body, validationResult } = require("express-validator");
 const Post = require("../models/post");
 const User = require("../models/user");
 const Comment = require("../models/comment");
+const mongoose = require("mongoose");
 
 //GET ALL BLOG POSTS
 exports.getPosts = asyncHandler(async (req, res, next) => {
@@ -14,9 +15,15 @@ exports.getPosts = asyncHandler(async (req, res, next) => {
 
 //GET A SINGLE POST
 exports.getPostDetail = asyncHandler(async (req, res, next) => {
+  console.log(req.params);
   try {
     const postId = req.params.id;
-    console.log(postId);
+
+    if (!mongoose.Types.ObjectId.isValid(postId)) {
+      const error = new Error("Invalid post ID");
+      error.status = 400;
+      return next(error);
+    }
 
     const post = await Post.findById(postId)
       .populate("author", "username")
@@ -28,10 +35,7 @@ exports.getPostDetail = asyncHandler(async (req, res, next) => {
       return next(error);
     }
 
-    const comments = await Comment.find({ post: postId })
-      .populate("author", "username")
-      .exec();
-    res.json(post, comments);
+    res.status(200).json(post);
   } catch (error) {
     next(error);
   }
@@ -40,7 +44,7 @@ exports.getPostDetail = asyncHandler(async (req, res, next) => {
 //FIND POSTS OF A SPECIFIC USER
 exports.getUserPosts = asyncHandler(async (req, res, next) => {
   try {
-    const user = req.params.id;
+    const user = req.user;
 
     const posts = await Post.find({ author: user })
       .populate("author", "username")
@@ -65,7 +69,7 @@ exports.postPosts = asyncHandler(async (req, res, next) => {
       author: req.user.id,
       date: new Date(),
       text: req.body.text,
-      status: "Public",
+      status: req.body.status,
     });
 
     await post.save();
