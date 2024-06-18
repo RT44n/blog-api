@@ -109,22 +109,31 @@ exports.putPosts = asyncHandler(async (req, res, next) => {
 exports.deletePosts = asyncHandler(async (req, res, next) => {
   try {
     const userId = req.user.id;
-    console.log(userId);
+    console.log(`Requesting user ID: ${userId}`);
 
+    // Find the post by ID
     const post = await Post.findById(req.params.id).exec();
 
     if (!post) {
+      console.log("Post not found");
       return res.status(404).json({ message: "Post not found" });
     }
 
+    console.log(`Post found: ${post}`);
+
+    // Check if the requesting user is the owner of the post
     if (String(post.user._id) !== String(userId)) {
+      console.log("Unauthorized delete attempt");
       return res.status(401).json({ message: "Unauthorized" });
     }
 
+    // Delete the post
     await Post.findByIdAndDelete(req.params.id);
+    console.log("Post successfully deleted");
 
     res.json({ message: "Successfully deleted" });
   } catch (err) {
+    console.error("Error occurred:", err);
     next(err);
   }
 });
