@@ -108,14 +108,16 @@ exports.putPosts = asyncHandler(async (req, res, next) => {
 //DELETE A SINGLE BLOG POST
 exports.deletePosts = asyncHandler(async (req, res, next) => {
   try {
-    const user = req.user.id;
+    const userId = req.user.id;
+    console.log(userId);
+
     const post = await Post.findById(req.params.id).exec();
 
     if (!post) {
       return res.status(404).json({ message: "Post not found" });
     }
 
-    if (String(post.user._id) !== String(user)) {
+    if (String(post.user._id) !== String(userId)) {
       return res.status(401).json({ message: "Unauthorized" });
     }
 
