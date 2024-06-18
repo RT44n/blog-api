@@ -122,7 +122,7 @@ exports.deletePosts = asyncHandler(async (req, res, next) => {
     console.log(`Post found: ${post}`);
 
     // Check if the requesting user is the owner of the post
-    if (String(post.user._id) !== String(userId)) {
+    if (String(post.author) !== String(userId)) {
       console.log("Unauthorized delete attempt");
       return res.status(401).json({ message: "Unauthorized" });
     }
