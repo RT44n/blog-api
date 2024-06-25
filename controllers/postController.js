@@ -62,48 +62,76 @@ exports.getUserPosts = asyncHandler(async (req, res, next) => {
 });
 
 //POST A NEW BLOG POST
-exports.postPosts = asyncHandler(async (req, res, next) => {
-  try {
-    const post = new Post({
-      title: req.body.title,
-      author: req.user.id,
-      date: new Date(),
-      text: req.body.text,
-      status: req.body.status,
-    });
+exports.postPosts = [
+  // Validation rules
+  body("title").notEmpty().withMessage("Title is required"),
+  body("text").notEmpty().withMessage("Text is required"),
+  body("status").isIn(["published", "draft"]).withMessage("Invalid status"),
 
-    await post.save();
-    res.status(201).json({ message: "success", postId: post._id });
-  } catch (error) {
-    next(error);
-  }
-});
-
-//UPDATE A SINGLE BLOG POST
-exports.putPosts = asyncHandler(async (req, res, next) => {
-  try {
-    const postId = req.params.id;
-    const updatedPost = {
-      title: req.body.title,
-      author: req.user.id,
-      date: new Date(),
-      text: req.body.text,
-      status: req.body.status,
-    };
-
-    const post = await Post.findByIdAndUpdate(postId, updatedPost, {
-      new: true,
-    });
-
-    if (!post) {
-      return res.status(404).json({ message: "Post not found" });
+  // Route handler
+  asyncHandler(async (req, res, next) => {
+    // Handle validation errors
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
     }
 
-    res.status(200).json({ message: "success", post });
-  } catch (error) {
-    next(error);
-  }
-});
+    try {
+      const post = new Post({
+        title: req.body.title,
+        author: req.user.id,
+        date: new Date(),
+        text: req.body.text,
+        status: req.body.status,
+      });
+
+      await post.save();
+      res.status(201).json({ message: "success", postId: post._id });
+    } catch (error) {
+      next(error);
+    }
+  }),
+];
+
+//UPDATE A SINGLE BLOG POST
+exports.putPosts = [
+  // Validation rules
+  body("title").notEmpty().withMessage("Title is required"),
+  body("text").notEmpty().withMessage("Text is required"),
+  body("status").isIn(["published", "draft"]).withMessage("Invalid status"),
+
+  // Route handler
+  asyncHandler(async (req, res, next) => {
+    // Handle validation errors
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    try {
+      const postId = req.params.id;
+      const updatedPost = {
+        title: req.body.title,
+        author: req.user.id,
+        date: new Date(),
+        text: req.body.text,
+        status: req.body.status,
+      };
+
+      const post = await Post.findByIdAndUpdate(postId, updatedPost, {
+        new: true,
+      });
+
+      if (!post) {
+        return res.status(404).json({ message: "Post not found" });
+      }
+
+      res.status(200).json({ message: "success", post });
+    } catch (error) {
+      next(error);
+    }
+  }),
+];
 
 //DELETE A SINGLE BLOG POST
 exports.deletePosts = asyncHandler(async (req, res, next) => {
