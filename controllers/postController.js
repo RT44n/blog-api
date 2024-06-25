@@ -63,10 +63,13 @@ exports.getUserPosts = asyncHandler(async (req, res, next) => {
 
 //POST A NEW BLOG POST
 exports.postPosts = [
-  // Validation rules
-  body("title").notEmpty().withMessage("Title is required"),
-  body("text").notEmpty().withMessage("Text is required"),
-  body("status").isIn(["published", "draft"]).withMessage("Invalid status"),
+  // Validation and sanitization rules
+  body("title").notEmpty().withMessage("Title is required").escape(),
+  body("text").notEmpty().withMessage("Text is required").escape(),
+  body("status")
+    .isIn(["published", "draft"])
+    .withMessage("Invalid status")
+    .escape(),
 
   // Route handler
   asyncHandler(async (req, res, next) => {
@@ -95,10 +98,13 @@ exports.postPosts = [
 
 //UPDATE A SINGLE BLOG POST
 exports.putPosts = [
-  // Validation rules
-  body("title").notEmpty().withMessage("Title is required"),
-  body("text").notEmpty().withMessage("Text is required"),
-  body("status").isIn(["published", "draft"]).withMessage("Invalid status"),
+  // Validation and sanitization rules
+  body("title").notEmpty().withMessage("Title is required").escape(),
+  body("text").notEmpty().withMessage("Text is required").escape(),
+  body("status")
+    .isIn(["published", "draft"])
+    .withMessage("Invalid status")
+    .escape(),
 
   // Route handler
   asyncHandler(async (req, res, next) => {
