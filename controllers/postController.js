@@ -102,7 +102,7 @@ exports.putPosts = [
   body("title").notEmpty().withMessage("Title is required").escape(),
   body("text").notEmpty().withMessage("Text is required").escape(),
   body("status")
-    .isIn(["published", "draft"])
+    .isIn(["Public", "Private"])
     .withMessage("Invalid status")
     .escape(),
 
