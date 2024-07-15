@@ -35,7 +35,7 @@ router.delete(
   post_controller.deletePosts
 );
 
-router.get("user/:id/comments", comment_controller.getUserComments);
+//router.get("user/:id/comments", comment_controller.getUserComments);
 
 router.get("/posts/:id/comments", comment_controller.getPostComments);
 
