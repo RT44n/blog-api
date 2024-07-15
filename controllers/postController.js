@@ -8,7 +8,9 @@ const mongoose = require("mongoose");
 //GET ALL BLOG POSTS
 exports.getPosts = asyncHandler(async (req, res, next) => {
   // Find all posts and populate 'author' and 'comments'
-  const allPosts = await Post.find({}).populate("author", "username").exec();
+  const allPosts = await Post.find({ status: "Public" })
+    .populate("author", "username")
+    .exec();
 
   res.json(allPosts);
 });
