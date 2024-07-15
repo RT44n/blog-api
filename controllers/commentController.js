@@ -21,6 +21,23 @@ exports.getUserComments = asyncHandler(async (req, res, next) => {
   }
 });
 
+exports.getPostComments = asyncHandler(async (req, res, next) => {
+  try {
+    const post = req.params.id;
+
+    const comments = await Comment.find({ post: post }).exec();
+
+    if (!comments.length) {
+      const error = new Error("No comments found");
+      error.status = 404;
+      return next(error);
+    }
+    res.json(comments);
+  } catch (error) {
+    next(error);
+  }
+});
+
 exports.postComments = asyncHandler(async (req, res, next) => {
   res.json({ message: "yet to be implemented" });
 });
