@@ -40,19 +40,19 @@ router.get("user/:id/comments", comment_controller.getUserComments);
 router.get("/posts/:id/comments", comment_controller.getPostComments);
 
 router.post(
-  "/comments",
+  "/posts/:id/comments",
   passport.authenticate("jwt", { session: false }),
   comment_controller.postComments
 );
 
 router.put(
-  "/comments/:id",
+  "/posts/:id/comments",
   passport.authenticate("jwt", { session: false }),
   comment_controller.putComments
 );
 
 router.delete(
-  "/comments/:id",
+  "/posts/:id/comments",
   passport.authenticate("jwt", { session: false }),
   comment_controller.deleteComments
 );
