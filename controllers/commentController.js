@@ -27,7 +27,6 @@ exports.getPostComments = asyncHandler(async (req, res, next) => {
 exports.postComments = [
   // Validation rules
   body("postId").notEmpty().withMessage("Post ID is required"),
-  body("userId").notEmpty().withMessage("Author ID is required"),
   body("text").notEmpty().withMessage("Text is required"),
 
   // Request handler
@@ -37,7 +36,7 @@ exports.postComments = [
       return res.status(400).json({ errors: errors.array() });
     }
 
-    const { postId, userId, text } = req.body;
+    const { postId, text } = req.body;
 
     // Check if the post exists
     const post = await Post.findById(postId);
@@ -50,7 +49,7 @@ exports.postComments = [
     // Create and save the comment
     const comment = new Comment({
       post: postId,
-      author: userId,
+      author: req.user.id,
       text: text,
     });
 
