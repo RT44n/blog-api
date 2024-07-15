@@ -1,13 +1,14 @@
 const asyncHandler = require("express-async-handler");
 const { body, validationResult } = require("express-validator");
 const Comment = require("../models/comment");
-const Post = require("..models/post");
+const Post = require("../models/post"); // Fix typo here
 
-exports.getUserComments = asyncHandler(async (req, res, next) => {
+// Get comments for a specific post
+exports.getPostComments = asyncHandler(async (req, res, next) => {
   try {
-    const user = req.params.id;
+    const postId = req.params.id;
 
-    const comments = await Comment.find({ author: user })
+    const comments = await Comment.find({ post: postId })
       .populate("author", "username")
       .exec();
 
@@ -22,23 +23,7 @@ exports.getUserComments = asyncHandler(async (req, res, next) => {
   }
 });
 
-exports.getPostComments = asyncHandler(async (req, res, next) => {
-  try {
-    const post = req.params.id;
-
-    const comments = await Comment.find({ post: post }).exec();
-
-    if (!comments.length) {
-      const error = new Error("No comments found");
-      error.status = 404;
-      return next(error);
-    }
-    res.json(comments);
-  } catch (error) {
-    next(error);
-  }
-});
-
+// Create a new comment
 exports.postComments = [
   // Validation rules
   body("postId").notEmpty().withMessage("Post ID is required"),
@@ -54,6 +39,7 @@ exports.postComments = [
 
     const { postId, userId, text } = req.body;
 
+    // Check if the post exists
     const post = await Post.findById(postId);
     if (!post) {
       const error = new Error("Post not found");
@@ -61,6 +47,7 @@ exports.postComments = [
       return next(error);
     }
 
+    // Create and save the comment
     const comment = new Comment({
       post: postId,
       author: userId,
@@ -73,10 +60,16 @@ exports.postComments = [
   }),
 ];
 
+// Update a comment (placeholder)
 exports.putComments = asyncHandler(async (req, res, next) => {
-  res.json({ message: "yet to be implemented" });
+  res.json({
+    message: "Update comment functionality is yet to be implemented",
+  });
 });
 
+// Delete a comment (placeholder)
 exports.deleteComments = asyncHandler(async (req, res, next) => {
-  res.json({ message: "yet to be implemented" });
+  res.json({
+    message: "Delete comment functionality is yet to be implemented",
+  });
 });
