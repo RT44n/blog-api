@@ -37,6 +37,8 @@ router.delete(
 
 router.get("user/:id/comments", comment_controller.getUserComments);
 
+router.get("/posts/:id/comments", comment_controller.getPostComments);
+
 router.post(
   "/comments",
   passport.authenticate("jwt", { session: false }),
