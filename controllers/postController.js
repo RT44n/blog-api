@@ -9,6 +9,7 @@ const mongoose = require("mongoose");
 exports.getPosts = asyncHandler(async (req, res, next) => {
   // Find all posts and populate 'author' and 'comments'
   const allPosts = await Post.find({ status: "Public" })
+    .sort({ date: -1 })
     .populate("author", "username")
     .exec();
 
@@ -49,6 +50,7 @@ exports.getUserPosts = asyncHandler(async (req, res, next) => {
     const user = req.user;
 
     const posts = await Post.find({ author: user })
+      .sort({ date: -1 })
       .populate("author", "username")
       .exec();
 
